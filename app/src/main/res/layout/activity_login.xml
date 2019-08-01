@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Activity.activity_login">
+    <com.nvanbenschoten.motion.ParallaxImageView
+        android:id="@+id/panorama_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/horizontal3"
+        app:motionTiltSensitivity="2.5"/>
+  <RelativeLayout
+      android:layout_centerInParent="true"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">
+      <android.support.design.widget.TextInputLayout
+          android:layout_width="match_parent"
+          android:background="@drawable/round_corner_transparent"
+          android:layout_marginEnd="100dp"
+          android:layout_marginTop="20dp"
+          android:paddingStart="10dp"
+          android:paddingEnd="10dp"
+          android:id="@+id/input_username"
+          android:layout_centerHorizontal="true"
+          android:layout_height="wrap_content">
+          <EditText
+              android:text="aliosman"
+              android:id="@+id/edit_username"
+              android:hint="Kullanıcı Adı"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content" />
+      </android.support.design.widget.TextInputLayout>
+
+      <android.support.design.widget.TextInputLayout
+          android:id="@+id/input_password"
+          android:layout_width="match_parent"
+          android:layout_marginEnd="100dp"
+          android:paddingStart="10dp"
+          android:paddingEnd="10dp"
+          android:background="@drawable/round_corner_transparent"
+          android:layout_below="@id/input_username"
+          android:layout_centerHorizontal="true"
+          android:layout_marginTop="20dp"
+          android:layout_height="wrap_content">
+          <EditText
+              android:text="sifre"
+              android:id="@+id/edit_password"
+              android:hint="Şifre"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content" />
+      </android.support.design.widget.TextInputLayout>
+
+      <Button
+          android:layout_marginTop="20dp"
+          android:layout_centerHorizontal="true"
+          android:layout_below="@id/input_password"
+          android:text="Giriş"
+          android:id="@+id/btn_giris"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:background="@drawable/round_corner_transparent"
+          android:textColor="@color/colorDD5044"
+          />
+  </RelativeLayout>
+
+</RelativeLayout>

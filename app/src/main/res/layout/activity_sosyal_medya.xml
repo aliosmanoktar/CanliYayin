@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/root_view"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    tools:context=".Activity.ActivitySosyalMedya">
+    <RelativeLayout
+        android:id="@+id/top_menu_layout"
+        android:background="@android:color/white"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+        <ImageView
+            android:id="@+id/back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_back"
+            android:layout_centerVertical="true" />
+        <TextView
+            android:textSize="18sp"
+            android:textColor="@color/hint_color"
+            android:gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ayarlar"
+            android:layout_centerInParent="true"/>
+
+        <ImageView
+            android:padding="5dp"
+            android:id="@+id/AddSosyalMedya"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_add_circle" />
+    </RelativeLayout>
+    <View style="@style/settingLine"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/list_sosyalMedya"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:clipToPadding="false"
+        android:overScrollMode="never"/>
+</LinearLayout>

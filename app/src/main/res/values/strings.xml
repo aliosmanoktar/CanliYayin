@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">CanliYayin</string>
+    <string name="fingerprint_description">Devam etmek için parmak izinizi doğrulayınız!!</string>
+    <string name="fingerprint_hint">Sensöre dokunun!!</string>
+
+</resources>

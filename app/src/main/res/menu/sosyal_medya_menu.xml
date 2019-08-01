@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:title="İnstagram Hesabı Ekle"  android:id="@+id/menu_instagram"/>
+    <item android:title="Periscope Hesabı Ekle" android:id="@+id/menu_periscope"/>
+    <item android:title="Youtube Hesabı Ekle" android:id="@+id/menu_youtube"/>
+    <item android:title="Başka Hesap Ekle" android:id="@+id/menu_default" />
+</menu>

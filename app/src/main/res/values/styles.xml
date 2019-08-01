@@ -1,0 +1,60 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="settingLine">
+        <item name="android:background">#e0e0e0</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/margin_03</item>
+
+    </style>
+    <style name="settingDivisionTitle">
+        <item name="android:textSize">@dimen/string_12</item>
+        <item name="android:textColor">@color/color9E</item>
+        <item name="android:background">@color/colorF5</item>
+        <item name="android:paddingLeft">@dimen/margin_15</item>
+        <item name="android:paddingTop">@dimen/margin_15</item>
+        <item name="android:paddingBottom">@dimen/margin_6</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    <style name="settingItemTitle">
+        <item name="android:textSize">@dimen/string_15</item>
+        <item name="android:textColor">@color/color21</item>
+        <item name="android:paddingLeft">@dimen/margin_15</item>
+        <item name="android:paddingTop">@dimen/margin_13</item>
+        <item name="android:paddingRight">@dimen/margin_15</item>
+        <item name="android:paddingBottom">@dimen/margin_14</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+    <style name="settingItemValue">
+        <item name="android:textSize">@dimen/string_12</item>
+        <item name="android:textColor">@color/color9E</item>
+        <item name="android:paddingLeft">@dimen/margin_15</item>
+        <item name="android:paddingTop">@dimen/margin_13</item>
+        <item name="android:paddingRight">@dimen/margin_15</item>
+        <item name="android:paddingBottom">@dimen/margin_14</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_centerVertical">true</item>
+    </style>
+    <style name="AppBottomSheetDialogTheme"
+        parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+
+    <style name="AppModalStyle"
+        parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bottom_sheet_background</item>
+    </style>
+</resources>

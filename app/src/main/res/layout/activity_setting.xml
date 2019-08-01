@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="#ffff"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <LinearLayout
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+        <RelativeLayout
+            android:id="@+id/top_menu_layout"
+            android:background="@android:color/white"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_back"
+                android:layout_centerVertical="true" />
+            <TextView
+                android:textSize="18sp"
+                android:textColor="@color/hint_color"
+                android:gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ayarlar"
+                android:layout_centerInParent="true"/>
+        </RelativeLayout>
+        <View style="@style/settingLine"/>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:text="Görüntü Ayarları"
+                    style="@style/settingDivisionTitle"/>
+                <View style="@style/settingLine"/>
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/setting_video_resulution">
+                    <TextView
+                        android:text="Görüntü Ayarı"
+                        style="@style/settingItemTitle"/>
+                    <TextView
+                        android:id="@+id/video_resolution_value"
+                        style="@style/settingItemValue"/>
+                </RelativeLayout>
+                <View style="@style/settingLine"/>
+                <RelativeLayout
+                    android:id="@+id/setting_fps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="FPS"
+                        style="@style/settingItemTitle"/>
+                    <TextView
+                        android:id="@+id/video_framerate_value"
+                        android:text="29.97fps"
+                        style="@style/settingItemValue"/>
+                </RelativeLayout>
+                <View style="@style/settingLine"/>
+                <RelativeLayout
+                    android:id="@+id/setting_bitRate"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="Bitrate"
+                        style="@style/settingItemTitle"/>
+                    <TextView
+                        android:id="@+id/video_bitrate_value"
+                        android:text="1.59MB"
+                        style="@style/settingItemValue"/>
+                </RelativeLayout>
+                <View style="@style/settingLine"/>
+                <RelativeLayout
+                    android:id="@+id/setting_save"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="Save Stream"
+                        style="@style/settingItemTitle"/>
+
+                    <CheckBox
+                        android:id="@+id/save_stream"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true" />
+                </RelativeLayout>
+
+                <View style="@style/settingLine"/>
+
+                <RelativeLayout
+                    android:id="@+id/setting_path"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="Path"
+                        style="@style/settingItemTitle"/>
+                    <TextView
+                        android:id="@+id/txt_path"
+                        android:text="SavePath"
+                        style="@style/settingItemValue"/>
+                </RelativeLayout>
+                <View style="@style/settingLine"/>
+                <TextView
+                    android:text="Kayitlı Sosyal Medyalar"
+                    style="@style/settingDivisionTitle"/>
+                <View style="@style/settingLine"/>
+                <RelativeLayout
+                    android:id="@+id/setting_sosyal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="SosyalMedyalar"
+                        style="@style/settingItemTitle"/>
+                </RelativeLayout>
+                <TextView
+                    android:text="Hesap"
+                    style="@style/settingDivisionTitle"/>
+                <View style="@style/settingLine"/>
+                <RelativeLayout
+                    android:id="@+id/setting_kullanici"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:text="Çıkış Yap"
+                        style="@style/settingItemTitle"/>
+                    <TextView
+                        android:id="@+id/txt_kullanici_name"
+                        android:text="Ali Osman"
+                        style="@style/settingItemValue"/>
+                </RelativeLayout>
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+</RelativeLayout>

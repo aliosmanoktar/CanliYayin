@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/cikis_txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:textSize="20sp"
+        android:layout_marginBottom="30dp"
+        android:text="Çıkış Yapmak
+istediğinizden eminmisiniz?"
+        android:gravity="center"/>
+    <LinearLayout
+        android:layout_below="@id/cikis_txt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/dialog_cikis.iptal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn"
+            android:text="İptal"
+            android:textColor="@color/color9E" />
+        <Button
+            android:id="@+id/dialog_cikis.cikis"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/btn"
+            android:text="Çıkış Yap"
+            android:textColor="@color/colorDD5044" />
+    </LinearLayout>
+</RelativeLayout>
