@@ -6,6 +6,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
+import net.catsbilisim.canliyayin.Api.ApiResultSingle;
 import net.catsbilisim.canliyayin.Api.PeriscopeApi.Class.IPeriscopeFinish;
 import net.catsbilisim.canliyayin.Api.PeriscopeApi.Class.Response.PublishBroadcastResponse;
 import net.catsbilisim.canliyayin.Api.PeriscopeApi.PeriscopeConstant;
@@ -20,10 +21,10 @@ import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 
 public class ConnectionPublishBroadcast extends AsyncTask<String,String, PublishBroadcastResponse> {
-    IPeriscopeFinish finish;
-    String TAG=getClass().getName();
+    private ApiResultSingle<PublishBroadcastResponse> finish;
+    private String TAG=getClass().getName();
 
-    public ConnectionPublishBroadcast(IPeriscopeFinish finish) {
+    public ConnectionPublishBroadcast(ApiResultSingle<PublishBroadcastResponse> finish) {
         this.finish = finish;
     }
 

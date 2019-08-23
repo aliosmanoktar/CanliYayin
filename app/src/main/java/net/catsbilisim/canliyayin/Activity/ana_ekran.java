@@ -1,7 +1,9 @@
 package net.catsbilisim.canliyayin.Activity;
 
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.SystemClock;
@@ -24,39 +26,32 @@ import com.google.gson.Gson;
 import com.pedro.encoder.input.video.CameraHelper;
 
 import net.catsbilisim.canliyayin.Api.IAddRtmpURL;
-import net.catsbilisim.canliyayin.Api.InstagramApi.Class.InstagramConstants;
 import net.catsbilisim.canliyayin.Api.PeriscopeApi.PeriscopeApi;
 import net.catsbilisim.canliyayin.Api.UploadMedya;
-import net.catsbilisim.canliyayin.Api.VideoEndEndpoint;
 import net.catsbilisim.canliyayin.Api.VideoEndThread;
-import net.catsbilisim.canliyayin.Api.VideoStartEndpoint;
 import net.catsbilisim.canliyayin.Api.VideoStartThread;
 import net.catsbilisim.canliyayin.Api.YoutubeApi.YoutubeApi;
 import net.catsbilisim.canliyayin.Camera.RtmpCamera1;
 import net.catsbilisim.canliyayin.Api.InstagramApi.Class.Android.AndroidDevice;
-import net.catsbilisim.canliyayin.Api.InstagramApi.Class.BroadCast.BroadcastCreateResponse;
 import net.catsbilisim.canliyayin.Api.InstagramApi.Class.User.UserRequestMessage;
 import net.catsbilisim.canliyayin.Api.InstagramApi.InstagramApi;
-import net.catsbilisim.canliyayin.Api.PeriscopeApi.Class.IPeriscopeFinish;
-import net.catsbilisim.canliyayin.Api.PeriscopeApi.Class.Response.CheckDeviceCodeResponse;
-import net.catsbilisim.canliyayin.Api.PeriscopeApi.Class.Response.CreateBroadcastResponse;
-import net.catsbilisim.canliyayin.Api.PeriscopeApi.Endpoints.Connection.ConnectionCreateBroadcast;
-import net.catsbilisim.canliyayin.Api.PeriscopeApi.Endpoints.Connection.ConnectionPublishBroadcast;
 import net.catsbilisim.canliyayin.DataBase.InstagramUser;
 import net.catsbilisim.canliyayin.DataBase.PeriscopeUser;
 import net.catsbilisim.canliyayin.DataBase.YoutubeUser;
 import net.catsbilisim.canliyayin.DataBase.veritabani;
+import net.catsbilisim.canliyayin.Preferences.CallBack;
 import net.catsbilisim.canliyayin.Preferences.CameraPreferences;
-import net.catsbilisim.canliyayin.Preferences.IAddMedya;
+import net.catsbilisim.canliyayin.Preferences.DownloadSingleInterface;
 import net.catsbilisim.canliyayin.Preferences.IYayinKontrol;
-import net.catsbilisim.canliyayin.Preferences.Instagram_yayin_start;
-import net.catsbilisim.canliyayin.Preferences.SosyalMedya;
+import net.catsbilisim.canliyayin.Preferences.Version;
 import net.catsbilisim.canliyayin.Preferences.kullanici;
 import net.catsbilisim.canliyayin.R;
 import net.catsbilisim.canliyayin.Preferences.preferences;
 import net.catsbilisim.canliyayin.adapter.FingerPrintBottomSheet;
 import net.catsbilisim.canliyayin.adapter.FingerprintUiHelper;
-import net.catsbilisim.canliyayin.backgrund.AddMedya_background;
+import net.catsbilisim.canliyayin.adapter.custom_dialog;
+import net.catsbilisim.canliyayin.backgrund.DownloadFile;
+import net.catsbilisim.canliyayin.backgrund.ModelDownloadSingle;
 import net.catsbilisim.canliyayin.backgrund.yayinKontrol_background;
 import net.ossrs.rtmp.ConnectCheckerRtmp;
 import java.io.File;
@@ -68,7 +63,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-import okhttp3.Headers;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -156,9 +150,29 @@ public class ana_ekran extends AppCompatActivity implements ConnectCheckerRtmp,S
         url+=new preferences(getBaseContext()).getKullanici().getUid();
         Log.e(TAG, "onCreate: PublishUrl ==> "+url );
         InstaLogin();
-
+        Log.e(TAG, "onCreate: "+getCacheDir().getPath());
+        new custom_dialog().UpdateVersion(ana_ekran.this,new CallBack() {
+            @Override
+            public void Execute() {
+                /*Intent intent = new Intent("android.intent.action.VIEW");
+                intent.addCategory("android.intent.category.DEFAULT");
+                ///data/data/net.catsbilisim.canliyayin/files/app.apk
+                intent.setDataAndType(Uri.fromFile(new File(getFilesDir().getPath()+File.separator+"app.apk")), "application/vnd.android.package-archive");
+                startActivity(intent);*/
+            }
+        });
+        getPrivateAlbumStorageDir(this,"test");
+        //new DownloadFile(()).execute("http://192.168.1.109:82/app_assets/apk/app-2_1.apk");
     }
-
+    public File getPrivateAlbumStorageDir(Context context, String albumName) {
+        // Get the directory for the app's private pictures directory.
+        File file = new File(context.getExternalFilesDir(
+                Environment.DIRECTORY_PICTURES), albumName);
+        if (!file.mkdirs()) {
+            Log.e(TAG, "Directory not created");
+        }
+        return file;
+    }
     void InstaLogin(){
         _device=new AndroidDevice()
                 .setAndroidBoardName("angler")
@@ -537,5 +551,21 @@ public class ana_ekran extends AppCompatActivity implements ConnectCheckerRtmp,S
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void CheckUpdate(){
+        new ModelDownloadSingle<Version>(Version.class, new DownloadSingleInterface<Version>() {
+            @Override
+            public void Complete(Version item) {
+                if (!item.getVersion().equals(preferences.Version)){
+                    final Dialog dialog=new custom_dialog().UpdateVersion(ana_ekran.this,new CallBack() {
+                        @Override
+                        public void Execute() {
+
+                        }
+                    });
+                }
+            }
+        }).execute(preferences.CheckVersionUrl);
     }
 }

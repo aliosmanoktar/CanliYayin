@@ -33,8 +33,9 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecovera
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.youtube.YouTubeScopes;
 import com.google.gson.Gson;
+
+import net.catsbilisim.canliyayin.Api.ApiResultSingle;
 import net.catsbilisim.canliyayin.Api.InstagramApi.Class.User.InstaLoginResponse;
-import net.catsbilisim.canliyayin.Api.PeriscopeApi.Class.IPeriscopeFinish;
 import net.catsbilisim.canliyayin.Api.PeriscopeApi.Class.Response.CheckDeviceCodeResponse;
 import net.catsbilisim.canliyayin.Api.YoutubeApi.YoutubeApi;
 import net.catsbilisim.canliyayin.DataBase.InstagramUser;
@@ -121,39 +122,15 @@ public class ActivitySosyalMedya extends AppCompatActivity implements IAddMedya,
                         if (ok){
                             dialog.dismiss();
                             boolean sonuc=new veritabani(getBaseContext()).AddInstagramUser(new InstagramUser().setUserID(response.User.Pk).setName(response.User.UserName));
-                            if (sonuc){
-                                final AwesomeSuccessDialog dialog_succes = new AwesomeSuccessDialog(ActivitySosyalMedya.this)
-                                        .setCancelable(true)
-                                        .setTitle("Başarılı")
-                                        .setMessage("İnstagram Girişi Başarılı bir şekilde gerçekleştirildi")
-                                        .setPositiveButtonbackgroundColor(R.color.dialogSuccessBackgroundColor)
-                                        .setDoneButtonText("Tamam");
-                                dialog_succes.setDoneButtonClick(new Closure() {
-                                    @Override
-                                    public void exec() {
-                                        dialog_succes.show().dismiss();
-                                    }
-                                });
-                                dialog_succes.show();
-                            }
+                            if (sonuc)
+                                ShowSuccesDialog("İnstagram Girişi Başarılı bir şekilde gerçekleştirildi");
+
                             else
-                                KullaniciMevcutError();
+                                ShowSuccesDialog("Eklemek istediğiniz kullanıcı zaten mevcut");
                             ListEdit();
                         }
                         else {
-                            final AwesomeErrorDialog error_dialog = new AwesomeErrorDialog(ActivitySosyalMedya.this)
-                                    .setCancelable(true)
-                                    .setTitle("Başarısız")
-                                    .setMessage("İnstagram girişi yapılamadı lütfen bilgilerinizi kontrol ediniz")
-                                    .setButtonBackgroundColor(R.color.dialogErrorBackgroundColor)
-                                    .setButtonText("Tamam");
-                            error_dialog.setErrorButtonClick(new Closure() {
-                                @Override
-                                public void exec() {
-                                    error_dialog.show().dismiss();
-                                }
-                            });
-                            error_dialog.show();
+                            ShowErrorDialog("İnstagram girişi yapılamadı lütfen bilgilerinizi kontrol ediniz");
                         }
                     }
                 });
@@ -161,27 +138,16 @@ public class ActivitySosyalMedya extends AppCompatActivity implements IAddMedya,
             }
             else if (item.getItemId()==R.id.menu_periscope)
             {
-                dialog=new custom_dialog().AddPeriscope(ActivitySosyalMedya.this, new IPeriscopeFinish() {
+                new custom_dialog().AddPeriscope(ActivitySosyalMedya.this, new ApiResultSingle<CheckDeviceCodeResponse>() {
                     @Override
-                    public void Finish(Object value) {
+                    public void Finish(CheckDeviceCodeResponse value) {
                         CheckDeviceCodeResponse codeResponse = (CheckDeviceCodeResponse)value;
-                        Log.e(TAG,new Gson().toJson(codeResponse));
                         boolean sonuc= new veritabani(getBaseContext()).AddPeriscopeUser(new PeriscopeUser().setAccesToken(codeResponse.access_token).setTokenType(codeResponse.token_type).setUserName(codeResponse.user.username));
                         Log.e(TAG, "Finish: "+new Gson().toJson(codeResponse) );
-                        if (sonuc){
-                            final AwesomeSuccessDialog scs_dialog = new AwesomeSuccessDialog(ActivitySosyalMedya.this)
-                                    .setDoneButtonText("Tamam")
-                                    .setTitle("Başarılı")
-                                    .setMessage(codeResponse.user.username+" Başarılı bir şekilde giriş gerçekleştirildi");
-                            scs_dialog.setDoneButtonClick(new Closure() {
-                                @Override
-                                public void exec() {
-                                    scs_dialog.show().dismiss();
-                                }
-                            });
-                            scs_dialog.show();
-                        }else
-                            KullaniciMevcutError();
+                        if (sonuc)
+                            ShowSuccesDialog(codeResponse.user.username+" Başarılı bir şekilde giriş gerçekleştirildi");
+                        else
+                            ShowErrorDialog("Eklemek istediğiniz kullanıcı zaten mevcut");
                         ListEdit();
                     }
                 });
@@ -240,18 +206,7 @@ public class ActivitySosyalMedya extends AppCompatActivity implements IAddMedya,
                 Youtube(REQUEST_ACCOUNT_UPDATE);
             }
         }else{
-            new AwesomeErrorDialog(this)
-                    .setTitle("Hata")
-                    .setMessage("Kullanıcı izni olmadan youtube girişi yapılamaz")
-                    .setCancelable(true)
-                    .setButtonText("Tamam")
-                    .setErrorButtonClick(new Closure() {
-                        @Override
-                        public void exec() {
-
-                        }
-                    })
-                    .show();
+            ShowErrorDialog("Kullanıcı izni olmadan youtube girişi yapılamaz");
         }
     }
     @Override
@@ -260,12 +215,7 @@ public class ActivitySosyalMedya extends AppCompatActivity implements IAddMedya,
             case REQUEST_GOOGLE_PLAY_SERVICES:
                 System.out.println("Request_google_play_services");
                 if (resultCode!=RESULT_OK){
-                    new AwesomeErrorDialog(this)
-                            .setTitle("Play hizmetleri gerekli")
-                            .setMessage("Play hizmetlerini yükleyiniz")
-                            .setButtonText("Tamam")
-                            .setCancelable(true)
-                            .show();
+                    ShowErrorDialog("Play Hizmetlerini Yükleyiniz","Play Hizmetleri Gerekli");
                 }else{
                     return;
                 }
@@ -285,7 +235,7 @@ public class ActivitySosyalMedya extends AppCompatActivity implements IAddMedya,
                                     runOnUiThread(new Runnable() {
                                         @Override
                                         public void run() {
-                                            ShowSuccesDialog(name);
+                                            ShowSuccesDialogYoutube(name);
                                         }
                                     });
                                     //new veritabani(getBaseContext()).AddYoutubeUser(new YoutubeUser().setName(name));
@@ -302,7 +252,7 @@ public class ActivitySosyalMedya extends AppCompatActivity implements IAddMedya,
                             }
                         }).start();
                     }else {
-                        KullaniciMevcutError();
+                        ShowErrorDialog("Eklemek istediğiniz kullanıcı zaten mevcut");
                     }
                     ListEdit();
                 }
@@ -312,7 +262,7 @@ public class ActivitySosyalMedya extends AppCompatActivity implements IAddMedya,
                     final veritabani db =new veritabani(getBaseContext());
                     final String name = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
                     if (db.GetYoutubeUser(name)!=null){
-                        KullaniciMevcutError();
+                        ShowErrorDialog("Eklemek istediğiniz kullanıcı zaten mevcut");
                         ListEdit();
                         return;
                     }
@@ -327,7 +277,7 @@ public class ActivitySosyalMedya extends AppCompatActivity implements IAddMedya,
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        ShowSuccesDialog(name);
+                                        ShowSuccesDialogYoutube(name);
                                     }
                                 });
                             } catch (final UserRecoverableAuthIOException ex){
@@ -420,35 +370,11 @@ public class ActivitySosyalMedya extends AppCompatActivity implements IAddMedya,
                     veritabani db = new veritabani(getBaseContext());
                     db.DeleteInstagramUser(user.getID());
                     db.AddInstagramUser(new InstagramUser().setUserID(response.User.Pk).setName(response.User.UserName));
-                    final AwesomeSuccessDialog dialog_succes = new AwesomeSuccessDialog(ActivitySosyalMedya.this)
-                            .setCancelable(true)
-                            .setTitle("Başarılı")
-                            .setMessage("İnstagram Girişi Başarılı bir şekilde gerçekleştirildi")
-                            .setPositiveButtonbackgroundColor(R.color.dialogSuccessBackgroundColor)
-                            .setDoneButtonText("Tamam");
-                    dialog_succes.setDoneButtonClick(new Closure() {
-                        @Override
-                        public void exec() {
-                            dialog_succes.show().dismiss();
-                        }
-                    });
-                    dialog_succes.show();
+                    ShowSuccesDialog("İnstagram Girişi Başarılı bir şekilde gerçekleştirildi");
                     ListEdit();
                 }
                 else {
-                    final AwesomeErrorDialog error_dialog = new AwesomeErrorDialog(ActivitySosyalMedya.this)
-                            .setCancelable(true)
-                            .setTitle("Başarısız")
-                            .setMessage("İnstagram girişi yapılamadı lütfen bilgilerinizi kontrol ediniz")
-                            .setButtonBackgroundColor(R.color.dialogErrorBackgroundColor)
-                            .setButtonText("Tamam");
-                    error_dialog.setErrorButtonClick(new Closure() {
-                        @Override
-                        public void exec() {
-                            error_dialog.show().dismiss();
-                        }
-                    });
-                    error_dialog.show();
+                    ShowSuccesDialog("İnstagram girişi yapılamadı lütfen bilgilerinizi kontrol ediniz");
                 }
             }
         });
@@ -460,22 +386,11 @@ public class ActivitySosyalMedya extends AppCompatActivity implements IAddMedya,
                 permission,2);
     }
     private void UpdatePeriscope(final PeriscopeUser user){
-        dialog=new custom_dialog().AddPeriscope(ActivitySosyalMedya.this, new IPeriscopeFinish() {
+        new custom_dialog().AddPeriscope(ActivitySosyalMedya.this, new ApiResultSingle<CheckDeviceCodeResponse>() {
             @Override
-            public void Finish(Object value) {
+            public void Finish(CheckDeviceCodeResponse value) {
                 CheckDeviceCodeResponse codeResponse = (CheckDeviceCodeResponse)value;
-                Log.e(TAG,new Gson().toJson(codeResponse));
-                final AwesomeSuccessDialog scs_dialog = new AwesomeSuccessDialog(ActivitySosyalMedya.this)
-                        .setDoneButtonText("Tamam")
-                        .setTitle("Başarılı")
-                        .setMessage(codeResponse.user.username+" Başarılı bir şekilde giriş gerçekleştirildi");
-                scs_dialog.setDoneButtonClick(new Closure() {
-                    @Override
-                    public void exec() {
-                        scs_dialog.show().dismiss();
-                    }
-                });
-                scs_dialog.show();
+                ShowSuccesDialog(codeResponse.user.username+" Başarılı bir şekilde giriş gerçekleştirildi");
                 Log.e(TAG, "Finish: "+new Gson().toJson(codeResponse) );
                 veritabani db =new veritabani(getBaseContext());
                 db.DeletePeriscopeUser(user.getID());
@@ -497,27 +412,13 @@ public class ActivitySosyalMedya extends AppCompatActivity implements IAddMedya,
     private boolean DeleteCookieFile(String name){
         return new File(getFilesDir().getParent() + "/shared_prefs/"+name+".xml").delete();
     }
-    private void KullaniciMevcutError(){
-        final AwesomeErrorDialog error_dialog = new AwesomeErrorDialog(ActivitySosyalMedya.this)
-                .setCancelable(true)
-                .setTitle("Başarısız")
-                .setMessage("Eklemek istediğiniz kullanıcı zaten mevcut")
-                .setButtonBackgroundColor(R.color.dialogErrorBackgroundColor)
-                .setButtonText("Tamam");
-        error_dialog.setErrorButtonClick(new Closure() {
-            @Override
-            public void exec() {
-                error_dialog.show().dismiss();
-            }
-        });
-        error_dialog.show();
-    }
     private YoutubeApi getYoutubeApi(String name){
         return new YoutubeApi.Builder().setAccountName(name,this).Build();
     }
-    private void ShowSuccesDialog(String name){
+    private void ShowSuccesDialogYoutube(String name){
         new veritabani(getBaseContext()).AddYoutubeUser(new YoutubeUser().setName(name));
-        final AwesomeSuccessDialog scs = new AwesomeSuccessDialog(getBaseContext())
+
+        /*final AwesomeSuccessDialog scs = new AwesomeSuccessDialog(getBaseContext())
                 .setTitle("Başarılı")
                 .setMessage(name+" Youtube hesabı başarılı bir şekilde eklendi")
                 .setDoneButtonText("Tamam");
@@ -527,7 +428,88 @@ public class ActivitySosyalMedya extends AppCompatActivity implements IAddMedya,
                 scs.show().dismiss();
             }
         });
-        scs.show();
+        scs.show();*/
+
         ListEdit();
+    }
+
+    /***
+     * Show AwesomeSucces Dialog
+     * @param message Gösterilecek Messaj
+     */
+    private void ShowSuccesDialog(String message){
+        ShowSuccesDialog(message,null,null);
+    }
+    /***
+     * Show AwesomeSucces Dialog
+     * @param message Gösterilecek Messaj
+     * @param title Dialog Başlığı Null olursa default Başarılı
+     */
+    private void ShowSuccesDialog(String message,String title ){
+        ShowSuccesDialog(message,title,null);
+    }
+
+    /***
+     * Show AwesomeSucces Dialog
+     * @param message Gösterilecek Messaj
+     * @param title Dialog Başlığı Null olursa default Başarılı
+     * @param callBack Button Click Anında Calışır
+     */
+    private void ShowSuccesDialog(String message, String title, final CallBack callBack){
+        final AwesomeSuccessDialog scs = new AwesomeSuccessDialog(getBaseContext())
+                .setTitle(title==null?"Başarılı":title)
+                .setMessage(message)
+                .setPositiveButtonbackgroundColor(R.color.dialogSuccessBackgroundColor)
+                .setDoneButtonText("Tamam");
+        scs.setDoneButtonClick(new Closure() {
+            @Override
+            public void exec() {
+                scs.hide();
+                if (callBack!=null)
+                    callBack.Execute();
+            }
+        });
+        scs.show();
+    }
+
+
+    /**
+     * Show AwesomeError Dialog
+     * @param message Gösterilecek Messaj
+     */
+    private void ShowErrorDialog(String message){
+        ShowErrorDialog(message,null,null);
+    }
+    /**
+     * Show AwesomeError Dialog
+     * @param message Gösterilecek Messaj
+     * @param title Dialog Başlığı Null olursa default Başarısız
+     */
+    private void ShowErrorDialog(String message,String title){
+        ShowErrorDialog(message,title,null);
+    }
+    /**
+     * Show AwesomeError Dialog
+     * @param message Gösterilecek Messaj
+     * @param title Dialog Başlığı Null olursa default Başarısız
+     * @param callBack Button Click Anında Calışır
+     */
+    private void ShowErrorDialog(String message,String title,final CallBack callBack){
+        final AwesomeErrorDialog error_dialog = new AwesomeErrorDialog(ActivitySosyalMedya.this)
+                .setCancelable(true)
+                .setTitle(title==null ? "Başarısız" :title)
+                .setMessage(message)
+                .setButtonBackgroundColor(R.color.dialogErrorBackgroundColor)
+                .setButtonText("Tamam")
+                .setCancelable(true);
+        error_dialog.setErrorButtonClick(new Closure() {
+            @Override
+            public void exec() {
+                error_dialog.hide();
+                if (callBack!=null)
+                    callBack.Execute();
+            }
+        });
+        error_dialog.show();
     }
 }

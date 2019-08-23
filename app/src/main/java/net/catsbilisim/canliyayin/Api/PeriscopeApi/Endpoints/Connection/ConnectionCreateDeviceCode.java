@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
+import net.catsbilisim.canliyayin.Api.ApiResultSingle;
 import net.catsbilisim.canliyayin.Api.PeriscopeApi.Class.IPeriscopeFinish;
 import net.catsbilisim.canliyayin.Api.PeriscopeApi.Class.Response.CreateDeviceCodeResponse;
 import net.catsbilisim.canliyayin.Api.PeriscopeApi.PeriscopeConstant;
@@ -15,10 +17,10 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class ConnectionCreateDeviceCode extends AsyncTask<String,String, CreateDeviceCodeResponse> {
-    IPeriscopeFinish finish;
+    ApiResultSingle<CreateDeviceCodeResponse> finish;
     String TAG=getClass().getName();
 
-    public ConnectionCreateDeviceCode(IPeriscopeFinish finish) {
+    public ConnectionCreateDeviceCode(ApiResultSingle<CreateDeviceCodeResponse> finish) {
         this.finish = finish;
     }
 

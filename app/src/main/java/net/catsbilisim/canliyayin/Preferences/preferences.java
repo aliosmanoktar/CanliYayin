@@ -3,6 +3,7 @@ package net.catsbilisim.canliyayin.Preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.hardware.Camera;
+import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 import com.google.gson.Gson;
@@ -19,6 +20,7 @@ import java.util.List;
 
 public class preferences {
     String TAG = getClass().getName();
+    public static final String CheckVersionUrl="http://localhost:82/api/Version";
     public static final String addMedyas="http://176.235.244.2:80/api/MedyaYayin";
     public static final String loginUrl="http://176.235.244.2:80/api/Kullanici?name=%s&sifre=%s&telID=%s";
     public static final String CheckStream="http://176.235.244.2:80/api/YayinKontrol?name=%s&sifre=%s";
@@ -42,6 +44,7 @@ public class preferences {
     private final String _PerisCopeToke="PerisCopeToken";
     private final String _PerisCopeBroadCast="PerisCopeBroadCast";
     private final String _youtubeUser="YoutubeUser";
+    public static final String Version = "1.2";
     private String _path;
     private Context _context;
     public preferences(Context context){

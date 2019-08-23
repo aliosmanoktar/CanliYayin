@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+import net.catsbilisim.canliyayin.Api.ApiResultSingle;
 import net.catsbilisim.canliyayin.Api.IAddRtmpURL;
 import net.catsbilisim.canliyayin.Api.PeriscopeApi.Class.IPeriscopeFinish;
 import net.catsbilisim.canliyayin.Api.PeriscopeApi.Class.Response.CheckDeviceCodeResponse;
@@ -43,7 +44,7 @@ public class PeriscopeApi implements VideoStartEndpoint, VideoEndEndpoint {
         client=new OkHttpClient.Builder().addInterceptor(logging).build();
         this.user=user;
     }
-    private IPeriscopeFinish Superfinish;
+    private ApiResultSingle<CreateDeviceCodeResponse> Superfinish;
     public CheckDeviceCodeResponse CheckDevice(String deviceCode){
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty(PeriscopeConstant.CLIENT_ID_KEY, PeriscopeConstant.CLIENT_ID);
@@ -66,7 +67,7 @@ public class PeriscopeApi implements VideoStartEndpoint, VideoEndEndpoint {
         return new Gson().fromJson(sonuc, CheckDeviceCodeResponse.class);
     }
 
-    public String GetRegion(String str){
+    public String GetRegion(){
         OkHttpClient client=new OkHttpClient.Builder().build();
         Request request =new Request.Builder()
                 .url(PeriscopeConstant.GETREGION_URL)
@@ -181,14 +182,14 @@ public class PeriscopeApi implements VideoStartEndpoint, VideoEndEndpoint {
     }
 
 
-    public PeriscopeApi setSuperfinish(IPeriscopeFinish superfinish) {
+    public PeriscopeApi setSuperfinish(ApiResultSingle<CreateDeviceCodeResponse> superfinish) {
         Superfinish = superfinish;
         return this;
     }
     public void GetDeviceKey(){
-        new ConnectionCreateDeviceCode(new IPeriscopeFinish() {
+        new ConnectionCreateDeviceCode(new ApiResultSingle<CreateDeviceCodeResponse>() {
             @Override
-            public void Finish(Object value) {
+            public void Finish(CreateDeviceCodeResponse value) {
                Superfinish.Finish(value);
             }
         }).execute();

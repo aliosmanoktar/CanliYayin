@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -15,6 +17,7 @@ import com.awesomedialog.blennersilva.awesomedialoglibrary.AwesomeInfoDialog;
 import com.awesomedialog.blennersilva.awesomedialoglibrary.AwesomeProgressDialog;
 import com.awesomedialog.blennersilva.awesomedialoglibrary.interfaces.Closure;
 import net.catsbilisim.canliyayin.Activity.ana_ekran;
+import net.catsbilisim.canliyayin.Api.ApiResultSingle;
 import net.catsbilisim.canliyayin.Api.InstagramApi.Class.BroadCast.BroadcastCreateResponse;
 import net.catsbilisim.canliyayin.Api.InstagramApi.Class.Interface.ILoginResponse;
 import net.catsbilisim.canliyayin.Api.InstagramApi.Class.User.InstaLoginResponse;
@@ -27,22 +30,26 @@ import net.catsbilisim.canliyayin.Api.PeriscopeApi.Endpoints.Connection.Connecti
 import net.catsbilisim.canliyayin.Api.PeriscopeApi.PeriscopeApi;
 import net.catsbilisim.canliyayin.DataBase.InstagramUser;
 import net.catsbilisim.canliyayin.DataBase.PeriscopeUser;
+import net.catsbilisim.canliyayin.Preferences.CallBack;
 import net.catsbilisim.canliyayin.Preferences.IAddInstagram;
 import net.catsbilisim.canliyayin.Preferences.IAddMedya;
 import net.catsbilisim.canliyayin.Preferences.ISosyalKayitDialog;
 import net.catsbilisim.canliyayin.Preferences.SosyalMedya;
+import net.catsbilisim.canliyayin.Preferences.UpdateListener;
 import net.catsbilisim.canliyayin.Preferences.kullanici;
 import net.catsbilisim.canliyayin.Preferences.preferences;
 import net.catsbilisim.canliyayin.R;
 import net.catsbilisim.canliyayin.Preferences.interface_dialog_ok_click;
 import net.catsbilisim.canliyayin.backgrund.AddMedya_background;
+import net.catsbilisim.canliyayin.backgrund.DownloadFile;
+
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
 public class custom_dialog {
-    int maxHeight;
-    interface_dialog_ok_click click;
+    private int maxHeight;
+    private interface_dialog_ok_click click;
     public custom_dialog(interface_dialog_ok_click click){
         maxHeight=800;
         this.click=click;
@@ -213,41 +220,117 @@ public class custom_dialog {
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new InstagramApi(ana_ekran._requestMessage.setPassword(edit_password.getText().toString()).setUsername(edit_name.getText().toString()), ana_ekran._device, new InstagramApi.CallBack() {
-                    @Override
-                    public void Start() {
-                        pd_dialog.show();
-                    }
+                new InstagramApi.Builder()
+                        .setRequestMessage(ana_ekran._requestMessage
+                                .setPassword(edit_password.getText().toString())
+                                .setUsername(edit_name.getText().toString()))
+                        .setDevice(ana_ekran._device).setContext(activity)
+                        .setCallBack(new InstagramApi.CallBack() {
+                            @Override
+                            public void Start() {
+                                pd_dialog.show();
+                            }
 
-                    @Override
-                    public void Finish(BroadcastCreateResponse requestMessage) {
+                            @Override
+                            public void Finish(BroadcastCreateResponse requestMessage) {
 
-                    }
-                },activity).Login(new ILoginResponse() {
-                    @Override
-                    public void Login(InstaLoginResponse response) {
-                        pd_dialog.show().dismiss();
-                        instagram.Succes(response.Status.equalsIgnoreCase("ok"),response);
-                    }
-                });
+                            }
+                        })
+                        .Build()
+                        .Login(new ApiResultSingle<InstaLoginResponse>() {
+                            @Override
+                            public void Finish(InstaLoginResponse response) {
+                                pd_dialog.hide();
+                                instagram.Succes(response.Status.equalsIgnoreCase("ok"),response);
+                            }
+                        });
             }
         });
         return dialog;
     }
-    public Dialog AddPeriscope(final Activity activity, final IPeriscopeFinish finish){
+    public Dialog UpdateVersion(final Activity activity, final CallBack callBack){
+        final Dialog dialog = new Dialog(activity);
+        dialog.setContentView(R.layout.dialog_update_version);
+        Button dismis = dialog.findViewById(R.id.update_dialog_btn_dismis);
+        Button update = dialog.findViewById(R.id.update_dialog_btn_update);
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UpdateVersion(dialog,callBack);
+            }
+        });
+        dismis.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+        return dialog;
+    }
+    private void UpdateVersion(Dialog dialog, final CallBack callBack){
+        LinearLayout button_layout = dialog.findViewById(R.id.update_dialog_button_layout);
+        LinearLayout update_layout = dialog.findViewById(R.id.update_dialog_progress_layout);
+        final ProgressBar progressBar = dialog.findViewById(R.id.update_dialog_progress);
+        final TextView txt_progress = dialog.findViewById(R.id.update_dialog_progress_txt);
+        final TextView txt_size = dialog.findViewById(R.id.update_dialog_size_txt);
+        progressBar.setIndeterminate(true);
+        button_layout.setVisibility(View.GONE);
+        update_layout.setVisibility(View.VISIBLE);
+        progressBar.setProgress(0);
+        progressBar.setMax(100);
+        UpdateListener listener = new UpdateListener() {
+            String size="";
+            @Override
+            public void start() {
+            }
+
+            @Override
+            public void UpdateSize(final String size) {
+                this.size=size;
+            }
+
+            @Override
+            public void UpdateLoad(final long... params) {
+                if (progressBar.isIndeterminate())
+                    progressBar.setIndeterminate(false);
+                txt_progress.setText(params[0]+"%");
+                progressBar.setProgress(((int)params[0]));
+                txt_size.setText(format(params[1],2)+" / "+format(params[2],2));
+            }
+
+            @Override
+            public void Finish() {
+                callBack.Execute();
+            }
+        };
+        new DownloadFile(dialog.getContext().getFilesDir(),listener).execute("https://d-04.winudf.com/b/apk/Y29tLmxvbmVseWNhdGdhbWVzLlhwbG9yZV80MTUwN19jYTcxMjU1Yw?_fn=WCBwbG9yZSBGaWxlIE1hbmFnZXJfdjQuMTUuMDdfYXBrcHVyZS5jb20uYXBr&_p=Y29tLmxvbmVseWNhdGdhbWVzLlhwbG9yZQ&as=e5a8f7880f5b6957c95265b653f26fc75d5fac7e&c=1%7CTOOLS%7CZGV2PUxvbmVseSUyMENhdCUyMEdhbWVzJnQ9YXBrJnM9NzA0MTc1NiZ2bj00LjE1LjA3JnZjPTQxNTA3&hot=1&k=18b288a0e9098ec9238f70b7547877655d6254b0");
+    }
+    public String format(double bytes, int digits) {
+        String[] dictionary = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+        int index = 0;
+        for (index = 0; index < dictionary.length; index++) {
+            if (bytes < 1024) {
+                break;
+            }
+            bytes = bytes / 1024;
+        }
+        return String.format("%." + digits + "f", bytes) + " " + dictionary[index];
+    }
+    public void AddPeriscope(final Activity activity, final ApiResultSingle<CheckDeviceCodeResponse> finish){
         final Dialog pr_dialog = new AwesomeProgressDialog(activity)
                 .setMessage("Periscope Sunucusuna Bağlantı kuruluyor")
                 .setTitle("Lütfen Bekleyiniz")
                 .setCancelable(false)
                 .show();
         final PeriscopeApi api=new PeriscopeApi(null);
-        api.setSuperfinish(new IPeriscopeFinish() {
+        api.setSuperfinish(new ApiResultSingle<CreateDeviceCodeResponse>() {
             @Override
-            public void Finish(final Object value) {
+            public void Finish(final CreateDeviceCodeResponse value) {
                 pr_dialog.dismiss();
                 final AwesomeInfoDialog if_dialog =getPeriscopeInfoDialog(activity,(CreateDeviceCodeResponse) value);
                 if_dialog.show();
-                final String device_code =((CreateDeviceCodeResponse)value).device_code;
+                final String device_code =value.device_code;
                 Closure c =new Closure() {
                     @Override
                     public void exec() {
@@ -264,23 +347,24 @@ public class custom_dialog {
                                 if (response.state.equalsIgnoreCase("associated")){
                                     this.cancel();
                                     api.setUser(new PeriscopeUser().setAccesToken(response.access_token).setTokenType(response.token_type));
-                                    String region = api.GetRegion(response.token_type+" "+response.access_token);
-                                    new ConnectionCreateBroadcast(new IPeriscopeFinish() {
+                                    String region = api.GetRegion();
+                                    new ConnectionCreateBroadcast(new ApiResultSingle<CreateBroadcastResponse>() {
                                         @Override
-                                        public void Finish(Object value) {
-                                            CreateBroadcastResponse broadcastResponse=(CreateBroadcastResponse)value;
+                                        public void Finish(CreateBroadcastResponse value) {
+                                            CreateBroadcastResponse broadcastResponse=value;
                                             //final preferences ayarlar =new preferences(activity);
                                             //
                                             kullanici kullanici = new preferences(activity).getKullanici();
                                             String Link=broadcastResponse.encoder.rtmp_url+"/"+broadcastResponse.encoder.stream_key;
-                                            new AddMedya_background(new IAddMedya() {
+                                            new AddMedya_background(null).execute(String.format(preferences.AddYayin,Link,kullanici.getUid(),"Periscope"),"Periscope",Link);
+                                           /* new AddMedya_background(new IAddMedya() {
                                                 @Override
                                                 public void Finish(Integer ResultCode, SosyalMedya medya) {
                                                     if (ResultCode==200)
                                                         //ayarlar.AddYayin(medya);
                                                     System.out.println("Add Medya");
                                                 }
-                                            }).execute(String.format(preferences.AddYayin,Link,kullanici.getUid(),"Periscope"),"Periscope",Link);
+                                            }).execute(String.format(preferences.AddYayin,Link,kullanici.getUid(),"Periscope"),"Periscope",Link);*/
                                             activity.runOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
@@ -299,7 +383,6 @@ public class custom_dialog {
             }
         });
         api.GetDeviceKey();
-        return null;
     }
     private AwesomeInfoDialog getPeriscopeInfoDialog(Activity activity,CreateDeviceCodeResponse response){
         return new AwesomeInfoDialog(activity)

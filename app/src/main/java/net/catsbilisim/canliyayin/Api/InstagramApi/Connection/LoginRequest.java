@@ -3,6 +3,8 @@ package net.catsbilisim.canliyayin.Api.InstagramApi.Connection;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.google.gson.Gson;
+
+import net.catsbilisim.canliyayin.Api.ApiResultSingle;
 import net.catsbilisim.canliyayin.Api.InstagramApi.Class.InstagramConstants;
 import net.catsbilisim.canliyayin.Api.InstagramApi.Class.InstagramHashUtil;
 import net.catsbilisim.canliyayin.Api.InstagramApi.Class.Interface.ILoginResponse;
@@ -15,13 +17,13 @@ import okhttp3.*;
 
 public class LoginRequest extends AsyncTask<String,String, InstaLoginResponse> {
 
-    UserRequestMessage requestMessage;
-    ILoginResponse response;
-    Map<String,String> header;
-    OkHttpClient client;
-    String TAG = getClass().getName();
+    private UserRequestMessage requestMessage;
+    private ApiResultSingle<InstaLoginResponse> response;
+    private Map<String,String> header;
+    private OkHttpClient client;
+    private String TAG = getClass().getName();
 
-    public LoginRequest(UserRequestMessage requestMessage, ILoginResponse response, Map<String, String> header, OkHttpClient client) {
+    public LoginRequest(UserRequestMessage requestMessage, ApiResultSingle<InstaLoginResponse> response, Map<String, String> header, OkHttpClient client) {
         this.requestMessage = requestMessage;
         this.response = response;
         this.header = header;
@@ -56,6 +58,6 @@ public class LoginRequest extends AsyncTask<String,String, InstaLoginResponse> {
 
     @Override
     protected void onPostExecute(InstaLoginResponse instaLoginResponse) {
-        response.Login(instaLoginResponse);
+        response.Finish(instaLoginResponse);
     }
 }

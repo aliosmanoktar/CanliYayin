@@ -1,6 +1,7 @@
 package net.catsbilisim.canliyayin.Api.InstagramApi;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -13,6 +14,8 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+
+import net.catsbilisim.canliyayin.Api.ApiResultSingle;
 import net.catsbilisim.canliyayin.Api.IAddRtmpURL;
 import net.catsbilisim.canliyayin.Api.InstagramApi.Class.Android.AndroidDevice;
 import net.catsbilisim.canliyayin.Api.InstagramApi.Class.BroadCast.BaseRequest;
@@ -53,15 +56,15 @@ public class InstagramApi implements VideoStartEndpoint, VideoEndEndpoint {
     private AndroidDevice _device;
     private BroadcastCreateResponse broadcastCreateResponse;
     private InstaLoginResponse loginResponse;
-    public UserRequestMessage get_request_message() {
-        return _request_message;
-    }
     private String TAG=getClass().getName();
     private OkHttpClient client;
     private CallBack callBack;
     private Context context;
     private Long BrodcastId;
-    SharedPrefsCookiePersistor cookiePersistor;
+    private SharedPrefsCookiePersistor cookiePersistor;
+    public UserRequestMessage get_request_message() {
+        return _request_message;
+    }
     public AndroidDevice get_device() {
         return _device;
     }
@@ -175,15 +178,15 @@ public class InstagramApi implements VideoStartEndpoint, VideoEndEndpoint {
         }
         return ok[0]?cokie.value():null;
     }*/
-    public void Login(final ILoginResponse Iresponse){
+    public void Login(final ApiResultSingle<InstaLoginResponse> Iresponse){
         callBack.Start();
-        new LoginRequest(_request_message, new ILoginResponse() {
+        new LoginRequest(_request_message, new ApiResultSingle<InstaLoginResponse>() {
             @Override
-            public void Login(InstaLoginResponse response) {
-                Log.e(TAG, "Login: "+response.Status.equalsIgnoreCase("ok"));
+            public void Finish(InstaLoginResponse response) {
+                /*Log.e(TAG, "Login: "+response.Status.equalsIgnoreCase("ok"));
                 if (response.Status.equalsIgnoreCase("ok"))
-                    Log.e(TAG, "Login: Replace"+cookiePersistor.ReplaceFile(response.User.UserName));
-                Iresponse.Login(response);
+                    Log.e(TAG, "Login: Replace"+cookiePersistor.ReplaceFile(response.User.UserName));*/
+                Iresponse.Finish(response);
             }
         }, getHeaders(), client).execute();
     }
@@ -392,6 +395,44 @@ public class InstagramApi implements VideoStartEndpoint, VideoEndEndpoint {
                 .setCsrfToken(_request_message.getCsrftoken())
                 .setUser(user.getUserID())
                 .setUuid(_request_message.getDeviceId());
+    }
+
+    public static class Builder{
+
+        private UserRequestMessage requestMessage;
+        private AndroidDevice device;
+        private CallBack callBack;
+        private Context context;
+        private InstagramUser user;
+
+        public Builder setRequestMessage(UserRequestMessage requestMessage) {
+            this.requestMessage = requestMessage;
+            return this;
+        }
+
+        public Builder setDevice(AndroidDevice device) {
+            this.device = device;
+            return this;
+        }
+
+        public Builder setCallBack(CallBack callBack) {
+            this.callBack = callBack;
+            return this;
+        }
+
+        public Builder setContext(Context context) {
+            this.context = context;
+            return this;
+        }
+
+        public Builder setUser(InstagramUser user) {
+            this.user = user;
+            return this;
+        }
+
+        public InstagramApi Build(){
+            return user==null ? new InstagramApi(requestMessage,device,callBack,context) : new InstagramApi(requestMessage,device,callBack,context,user);
+        }
     }
     public interface CallBack{
         void Start();

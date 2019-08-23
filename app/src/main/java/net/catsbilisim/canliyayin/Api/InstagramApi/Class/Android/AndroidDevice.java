@@ -1,7 +1,5 @@
 package net.catsbilisim.canliyayin.Api.InstagramApi.Class.Android;
 
-import android.util.Log;
-
 import java.io.Serializable;
 import java.util.UUID;
 
@@ -149,7 +147,6 @@ public class AndroidDevice implements Serializable {
     }
 
     public String getDeviceId() {
-        Log.e("AndroidDevice", "getDeviceId: "+DeviceId );
         return DeviceId;
     }
 

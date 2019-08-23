@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+
+import net.catsbilisim.canliyayin.Api.ApiResultSingle;
 import net.catsbilisim.canliyayin.Api.PeriscopeApi.Class.IPeriscopeFinish;
 import net.catsbilisim.canliyayin.Api.PeriscopeApi.Class.Response.CheckDeviceCodeResponse;
 import net.catsbilisim.canliyayin.Api.PeriscopeApi.PeriscopeConstant;
@@ -17,9 +19,9 @@ import okhttp3.Response;
 public class ConnectionCheckDeviceCode extends AsyncTask<String,String, CheckDeviceCodeResponse> {
     String TAG=getClass().getName();
     String deviceCode;
-    IPeriscopeFinish finish;
+    ApiResultSingle<CheckDeviceCodeResponse> finish;
 
-    public ConnectionCheckDeviceCode(String deviceCode, IPeriscopeFinish finish) {
+    public ConnectionCheckDeviceCode(String deviceCode, ApiResultSingle<CheckDeviceCodeResponse> finish) {
         this.deviceCode = deviceCode;
         this.finish = finish;
     }
